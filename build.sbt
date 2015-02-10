@@ -12,3 +12,8 @@ libraryDependencies ++= Seq(
   cache,
   ws
 )
+
+libraryDependencies ++= Seq(
+  "org.webjars" %% "webjars-play" % "2.3.0-3",
+  "org.webjars" % "foundation" % "5.5.1"
+)
