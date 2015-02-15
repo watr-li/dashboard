@@ -1,2 +1,82 @@
-@import "lib/foundation/scss/foundation";
+$header-text-color: #444;
 
+$topbar-bg-color: #fff;
+$topbar-link-color: $header-text-color;
+$topbar-link-color-hover: $header-text-color;
+$topbar-link-color-active: $header-text-color;
+$topbar-link-color-active-hover: $header-text-color;
+
+// $topbar-link-color: $white;
+// $topbar-link-color-hover: $white;
+// $topbar-link-color-active: $white;
+// $topbar-link-color-active-hover: $white;
+// $topbar-link-weight: $font-weight-normal;
+// $topbar-link-font-size: rem-calc(13);
+// $topbar-link-hover-lightness: -10%; // Darken by 10%
+// $topbar-link-bg: $topbar-bg;
+$topbar-link-bg-hover: #eee;
+// $topbar-link-bg-color-hover: $charcoal;
+// $topbar-link-bg-active: $primary-color;
+// $topbar-link-bg-active-hover: scale-color($primary-color, $lightness: -14%);
+// $topbar-link-font-family: $body-font-family;
+// $topbar-link-text-transform: none;
+// $topbar-link-padding: ($topbar-height / 3);
+// $topbar-back-link-size: rem-calc(18);
+// $topbar-link-dropdown-padding: rem-calc(20);
+// $topbar-button-font-size: 0.75rem;
+// $topbar-button-top: 7px;
+
+// Style the top bar dropdown elements
+$topbar-dropdown-bg: #eee;
+//$topbar-dropdown-link-color: $white;
+//$topbar-dropdown-link-color-hover: $topbar-link-color-hover;
+//$topbar-dropdown-link-bg: $oil;
+//$topbar-dropdown-link-bg-hover: $oil;
+//$topbar-dropdown-link-weight: $font-weight-normal;
+//$topbar-dropdown-toggle-size: 5px;
+//$topbar-dropdown-toggle-color: $white;
+//$topbar-dropdown-toggle-alpha: 0.4;
+
+
+@import "foundation";
+
+
+
+#mainContainer {
+  //background: url(../images/ricepaper.png);
+}
+
+
+
+
+.plant {
+  @extend .large-4, .small-6, .columns;
+
+  padding: 4%;
+
+  .detail {
+    @extend .panel;
+
+    background: none;
+    border: 0;
+
+    margin-top: 1.5rem;
+  }
+
+  img {
+    border-radius: 9999px;
+    border: 20px solid black;
+  }
+
+  &.happy img {
+    border-color: #51A589;
+  }
+
+  &.okay img {
+    border-color: #F2A051;
+  }
+
+  &.thirsty img {
+    border-color: #B52233;
+  }
+}
