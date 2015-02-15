@@ -13,7 +13,4 @@ libraryDependencies ++= Seq(
   ws
 )
 
-libraryDependencies ++= Seq(
-  "org.webjars" %% "webjars-play" % "2.3.0-3",
-  "org.webjars" % "foundation" % "5.5.1"
-)
+libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.34"
