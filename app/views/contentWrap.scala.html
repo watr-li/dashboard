@@ -1,0 +1,25 @@
+@(content: Html)
+
+@main() {
+    
+    <div class="row">
+        <div class="large-12 columns" id="mainContainer">
+    
+            @header()
+    
+        <div class="row">
+            <div class="large-12 columns">
+                <div class="row">
+
+                    @content
+                    
+                </div>
+            </div>
+        </div>
+
+            @footer()
+    
+        </div>
+    </div>
+
+}

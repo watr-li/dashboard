@@ -13,28 +13,10 @@
     </div>
 }
 
-@main("Welcome to Play") {
+@contentWrap {
 
-
-    <div class="row">
-        <div class="large-12 columns" id="mainContainer">
-
-           @header()
-
-            <div class="row">
-                <div class="large-12 columns">
-                    <div class="row">
-                        @plants.map { plant =>
-                            @displayPlant(plant)
-                        }
-                    </div>
-                </div>
-            </div>
-
-
-            @footer()
-
-        </div>
-    </div>
+    @plants.map { plant =>
+        @displayPlant(plant)
+    }
 
 }

@@ -1,0 +1,11 @@
+@(form:Form[PlantData])
+
+<div class="large-12 columns">
+    @helper.form(action = routes.PlantController.plantPost, 'enctype -> "multipart/form-data") {
+        @helper.inputText(form("name"))
+        @helper.inputFile(form("picture"))
+        <input type="submit" value="Submit">
+    }
+</div>
+
+    

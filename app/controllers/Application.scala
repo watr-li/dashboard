@@ -1,5 +1,6 @@
 package controllers
 
+import models.Plant
 import play.api.mvc._
 
 import lib.PlantStates._
@@ -7,9 +8,7 @@ import lib.PlantStates._
 import scala.util.Random
 
 
-case class Plant(name:String, state:PlantState, avatar:String) {
 
-}
 
 object Application extends Controller {
 
