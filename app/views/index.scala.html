@@ -1,12 +1,14 @@
-@(plants: List[Int])
+@(plants: Seq[Plant])
 
-@plant() = {
-    <div class="large-4 small-6 columns">
-        <img src="http://placehold.it/500x500&text=Thumbnail">
+@displayPlant(plant:Plant) = {
+    <div>
+        <div class="plant @plant.state.toString.toLowerCase">
+            <img src="@routes.Assets.at(s"images/plants/${plant.avatar}")">
 
-        <div class="panel">
-            <h5>Item Name</h5>
-            <h6 class="subheader">$000.00</h6>
+            <div class="detail">
+                <h3>@plant.name</h3>
+                <h6>@plant.state.moodString</h6>
+            </div>
         </div>
     </div>
 }
@@ -15,15 +17,15 @@
 
 
     <div class="row">
-        <div class="large-12 columns">
+        <div class="large-12 columns" id="mainContainer">
 
            @header()
 
             <div class="row">
                 <div class="large-12 columns">
                     <div class="row">
-                        @plants.map { i =>
-                            @plant()
+                        @plants.map { plant =>
+                            @displayPlant(plant)
                         }
                     </div>
                 </div>
