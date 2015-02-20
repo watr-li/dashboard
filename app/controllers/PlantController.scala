@@ -1,8 +1,13 @@
 package controllers
 
+
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
+import util.SlickDB
+
+
+import scala.slick.driver.MySQLDriver.simple._
 
 case class PlantData(name:String, picture:Int) {
 
@@ -14,6 +19,9 @@ case class PlantData(name:String, picture:Int) {
  */
 object PlantController extends Controller {
 
+  //implicit val jdbcBackend = JdbcBackend.Database.forDataSource(DB.getDataSource()).createSession()
+  
+  
   val plantForm = Form(
     mapping(
       "name" -> nonEmptyText,
@@ -26,22 +34,35 @@ object PlantController extends Controller {
   }
   
   def plantPost = Action(parse.multipartFormData) { implicit request =>
-//    Request(request, request.bo);
-    // Handle file upload
     request.body.file("picture").map { picture =>
       import java.io.File
       val filename = picture.filename
       val contentType = picture.contentType
       val targetFilename = s"/tmp/picture/$filename"
       picture.ref.moveTo(new File(targetFilename))
-      
-      val file = models.File.save(models.File(None, targetFilename))
-      
-      Ok("File uploaded " + file.id.get.toString)
+
+      import db.Tables._
+      val insertedId = SlickDB.withSession { implicit session =>
+        (Files returning Files.map(_.id)) += FilesRow(0, targetFilename, filename, contentType.get)
+
+      }
+
+
+
+      //JdbcBackend.Database.forDataSource(DB.getDataSource()).createSession()
+
+      Ok("File uploaded " + insertedId)
+      // + file.id.get.toString)
     }.getOrElse {
       Redirect(routes.Application.index).flashing(
         "error" -> "Missing file")
     }
+    
+    
+    
+//    Request(request, request.bo);
+    // Handle file upload
+    
     //request.bo
     //val foo = plantForm.bindFromRequest.bind(Map("picture" -> "foolol"))
     
@@ -70,5 +91,7 @@ object PlantController extends Controller {
 //    )
     
   }
+  
+  
 
 }
