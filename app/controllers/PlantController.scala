@@ -1,11 +1,14 @@
 package controllers
 
 
+import db.Tables.FilesRow
+import jdk.nashorn.internal.objects.Global
+import play.GlobalSettings
+import play.api.libs.Files.TemporaryFile
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import util.SlickDB
-
 
 import scala.slick.driver.MySQLDriver.simple._
 
@@ -19,9 +22,6 @@ case class PlantData(name:String, picture:Int) {
  */
 object PlantController extends Controller {
 
-  //implicit val jdbcBackend = JdbcBackend.Database.forDataSource(DB.getDataSource()).createSession()
-  
-  
   val plantForm = Form(
     mapping(
       "name" -> nonEmptyText,
@@ -32,66 +32,72 @@ object PlantController extends Controller {
   def index = Action {
     Ok(views.html.plant.create(plantForm))
   }
+
+  
   
   def plantPost = Action(parse.multipartFormData) { implicit request =>
+    val requestWithFile = handleFileUpload(request)._2
+
+    plantForm.bindFromRequest()(requestWithFile).fold(
+      formWithErrors => request.body.dataParts.get("picture") match {
+        case Some(Seq(x)) =>  BadRequest(views.html.plant.create(formWithErrors)).withSession("picture" -> x)
+        case _ => BadRequest(views.html.plant.create(formWithErrors))
+      },
+
+      plantData => {
+        Ok(plantData.picture.toString)
+      }
+    )
+  }
+
+
+
+
+
+
+  /**
+   * Takes a request MultiPartFormData request, moves the file to a new location,
+   * writes the entry to the database and returns the augmented request with the
+   * picture variable added. Not very generic, room for improvement :D
+   * @param request The request with which the file was sent
+   * @return A tuple consisting of the inserted file if it exists as well as the request,
+   *         possibly augmented with the file id
+   */
+  def handleFileUpload(request:Request[MultipartFormData[TemporaryFile]]):(Option[FilesRow], Request[MultipartFormData[TemporaryFile]])  = {
+    
     request.body.file("picture").map { picture =>
       import java.io.File
       val filename = picture.filename
       val contentType = picture.contentType
-      val targetFilename = s"/tmp/picture/$filename"
-      picture.ref.moveTo(new File(targetFilename))
+      
+      val targetFile = s"pictures/$filename"
+      val targetPath = s"${global.Global.uploadDirectory}/$targetFile"
 
-      import db.Tables._
-      val insertedId = SlickDB.withSession { implicit session =>
-        (Files returning Files.map(_.id)) += FilesRow(0, targetFilename, filename, contentType.get)
+      picture.ref.moveTo(new File(targetPath))
 
+      val file = SlickDB.withSession { implicit session =>
+        import db.Tables._
+        val insertedId = (Files returning Files.map(_.id)) +=
+          FilesRow(0, targetFile, filename, contentType.get)
+
+        Files.filter(_.id === insertedId).list.head
       }
 
+      val requestWithFile = request.map { body =>
+        MultipartFormData.apply(
+          body.dataParts ++ Map("picture" -> Seq(file.id.toString)),
+          body.files,
+          body.badParts,
+          body.missingFileParts
+        )
+      }
 
+      (Some(file), requestWithFile)
 
-      //JdbcBackend.Database.forDataSource(DB.getDataSource()).createSession()
-
-      Ok("File uploaded " + insertedId)
-      // + file.id.get.toString)
     }.getOrElse {
-      Redirect(routes.Application.index).flashing(
-        "error" -> "Missing file")
+      (None, request)
     }
-    
-    
-    
-//    Request(request, request.bo);
-    // Handle file upload
-    
-    //request.bo
-    //val foo = plantForm.bindFromRequest.bind(Map("picture" -> "foolol"))
-    
-    
-    
-//    val r = request.map { body =>
-//      MultipartFormData.apply(
-//        body.dataParts ++ Map("picture" -> Seq("foolol123")),
-//        body.files,
-//        body.badParts,
-//        body.missingFileParts
-//      )
-//    }
-//
-//
-//    // Handle rest of form
-//    plantForm.bindFromRequest()(r).fold(
-//      formWithErrors => {
-//        BadRequest(views.html.plant.create(formWithErrors))
-//      },
-//
-//      plantData => {
-//        Ok(plantData.picture)
-//      }
-//
-//    )
-    
   }
-  
   
 
 }
