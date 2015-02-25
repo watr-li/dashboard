@@ -19,6 +19,8 @@ libraryDependencies += "com.typesafe.slick" %% "slick" % "2.1.0"
 
 libraryDependencies +=  "com.typesafe.slick" %% "slick-codegen" % "2.1.0"
 
+libraryDependencies += "org.eclipse.californium" % "californium-core" % "1.0.0-M3"
+
 lazy val slick = TaskKey[Seq[File]]("gen-tables")
 
 lazy val slickCodeGenTask = (sourceManaged, dependencyClasspath in Compile, runner in Compile, streams) map { (dir, cp, r, s) =>
