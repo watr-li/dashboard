@@ -2,12 +2,15 @@ package coap
 
 import actors.messages.NodeRegistered
 import akka.actor.ActorRef
+
 import org.eclipse.californium.core.CoapResource
 import org.eclipse.californium.core.coap.CoAP.ResponseCode
 import org.eclipse.californium.core.server.resources.CoapExchange
 import play.api.Logger
-import util.SlickDB
 
+
+import db.Tables._
+import util.SlickDB
 import scala.slick.driver.MySQLDriver.simple._
 
 /**
@@ -22,13 +25,16 @@ import scala.slick.driver.MySQLDriver.simple._
 class NodesResource(serverActor:ActorRef) extends CoapResource("nodes") {
   val logger: Logger = Logger(this.getClass)
 
-  override def handlePUT(ex:CoapExchange):Unit = SlickDB.withSession { implicit session =>
-    import db.Tables._
-
+  override def handlePUT(ex:CoapExchange):Unit = {
     logger.info(s"Received PUT with Payload ${ex.getRequestText} from ${ex.getSourceAddress}")
 
-    // Store the registered node in the database
+    val node = storeNodeInDatabase(ex)
+    serverActor ! NodeRegistered(node)
+  }
+
+  def storeNodeInDatabase(ex:CoapExchange):db.Tables.NodesRow = SlickDB.withSession { implicit session =>
     val identifier = ex.getRequestText
+    // TODO: This assumes the default CoAP port
     val nodeRow = NodesRow(0, identifier, ex.getSourceAddress.getHostAddress, 5683)
     val q = Nodes returning Nodes.map(_.id)
 
@@ -37,7 +43,6 @@ class NodesResource(serverActor:ActorRef) extends CoapResource("nodes") {
       case None => ex.respond(ResponseCode.CHANGED)
     }
 
-    val node = Nodes.filter(_.hardwareIdentifier === identifier).list.head
-    serverActor ! NodeRegistered(node)
+    Nodes.filter(_.hardwareIdentifier === identifier).list.head
   }
 }
