@@ -9,5 +9,5 @@ GET        /                    controllers.Application.index
 GET        /assets/*file        controllers.Assets.at(path="/public", file)
 
 
-GET        /plant/create        controllers.PlantController.index
-POST       /plant/create        controllers.PlantController.plantPost
+GET        /plants/create        controllers.PlantController.create
+POST       /plants/create        controllers.PlantController.plantPost

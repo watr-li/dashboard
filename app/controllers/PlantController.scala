@@ -27,7 +27,7 @@ object PlantController extends Controller {
     )(PlantData.apply)(PlantData.unapply)
   )
 
-  def index = Action {
+  def create = Action {
     Ok(views.html.plant.create(plantForm))
   }
 
