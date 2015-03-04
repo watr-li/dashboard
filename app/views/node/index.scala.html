@@ -1,7 +1,11 @@
-@(nodes:Seq[db.Tables.NodesRow], ajax:Boolean = false)
+@(nodes:Seq[db.Tables.NodesRow], unassignedPlants:Seq[db.Tables.PlantsRow], ajax:Boolean = false)
 
-@displayPlant(foo:String) = {
-    lol
+@plantDropdown(node:db.Tables.NodesRow, plants:Seq[db.Tables.PlantsRow]) = {
+    <select class="node-plant-selector" data-node-id="@node.id">
+        @plants.map { plant =>
+          <option value="@plant.id">@plant.name</option>
+        }
+    </select>
 }
 
 @contentWrap() {
@@ -29,7 +33,7 @@
                         <td>@node.hardwareIdentifier</td>
                         <td>@node.address</td>
                         <td>@node.port</td>
-                        <td>foobar</td>
+                        <td>@plantDropdown(node, unassignedPlants)</td>
                     </tr>
                 }
             </tbody>
