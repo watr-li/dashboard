@@ -1,7 +1,9 @@
 package controllers
 
 
+import controllers.Application._
 import db.Tables._
+import models.Plant
 import play.api.libs.Files.TemporaryFile
 import play.api.mvc._
 import play.api.data._
@@ -26,6 +28,13 @@ object PlantController extends Controller {
       "picture" -> number
     )(PlantData.apply)(PlantData.unapply)
   )
+
+  def index = Action {
+    SlickDB.withSession { implicit session =>
+      val plants = Plants.list.map(Plant.fromPlantsRow)
+      Ok(views.html.index(plants))
+    }
+  }
 
   def create = Action {
     Ok(views.html.plant.create(plantForm))
