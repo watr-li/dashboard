@@ -1,9 +1,10 @@
 @(plants: Seq[Plant])
 
+
 @displayPlant(plant:Plant) = {
     <div>
         <div class="plant @plant.state.toString.toLowerCase">
-            <img src="@routes.Assets.at(s"images/plants/${plant.avatar}")">
+            <img src="@plant.picture">
 
             <div class="detail">
                 <h3>@plant.name</h3>
