@@ -1,0 +1,33 @@
+@(nodes:Seq[db.Tables.NodesRow], ajax:Boolean = false)
+
+@displayPlant(foo:String) = {
+    lol
+}
+
+@contentWrap() {
+
+    <div class="large-12 columns">
+        <table>
+            <thead>
+                <tr>
+                    <th>Hardware Identifier</th>
+                    <th>IP</th>
+                    <th>Port</th>
+                    <th>Assigned plant</th>
+                </tr>
+            </thead>
+            <tbody>
+                @nodes.map { node =>
+                    <tr>
+                        <td>@node.hardwareIdentifier</td>
+                        <td>@node.address</td>
+                        <td>@node.port</td>
+                        <td>foobar</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+    </div>
+}

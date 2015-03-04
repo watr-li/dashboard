@@ -1,25 +1,29 @@
-@(content: Html)
+@(ajax:Boolean = false)(content: Html)
 
-@main() {
-    
-    <div class="row">
-        <div class="large-12 columns" id="mainContainer">
-    
-            @header()
-    
+@if(ajax) {
+    @content
+} else {
+    @main() {
+
         <div class="row">
-            <div class="large-12 columns">
-                <div class="row">
+            <div class="large-12 columns" id="mainContainer">
 
-                    @content
-                    
+                @header()
+
+                <div class="row">
+                    <div class="large-12 columns">
+                        <div class="row">
+
+                        @content
+
+                        </div>
+                    </div>
                 </div>
+
+                @footer()
+
             </div>
         </div>
 
-            @footer()
-    
-        </div>
-    </div>
-
+    }
 }

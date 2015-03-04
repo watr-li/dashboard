@@ -11,3 +11,5 @@ GET        /assets/*file        controllers.Assets.at(path="/public", file)
 
 GET        /plants/create        controllers.PlantController.create
 POST       /plants/create        controllers.PlantController.plantPost
+
+GET        /nodes                controllers.NodesController.index
