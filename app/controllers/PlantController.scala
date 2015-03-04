@@ -1,9 +1,7 @@
 package controllers
 
 
-import db.Tables.FilesRow
-import jdk.nashorn.internal.objects.Global
-import play.GlobalSettings
+import db.Tables._
 import play.api.libs.Files.TemporaryFile
 import play.api.mvc._
 import play.api.data._
@@ -28,13 +26,13 @@ object PlantController extends Controller {
       "picture" -> number
     )(PlantData.apply)(PlantData.unapply)
   )
-  
+
   def index = Action {
     Ok(views.html.plant.create(plantForm))
   }
 
-  
-  
+
+
   def plantPost = Action(parse.multipartFormData) { implicit request =>
     val requestWithFile = handleFileUpload(request)._2
 
@@ -45,7 +43,8 @@ object PlantController extends Controller {
       },
 
       plantData => {
-        Ok(plantData.picture.toString)
+        storePlant(plantData)
+        Redirect("/")
       }
     )
   }
@@ -53,6 +52,12 @@ object PlantController extends Controller {
 
 
 
+  def storePlant(data:PlantData):db.Tables.PlantsRow = SlickDB.withSession { implicit session =>
+    val insertedId = (Plants returning Plants.map(_.id)) +=
+      PlantsRow(0, data.name, None, Some(data.picture))
+
+    Plants.filter(_.id === insertedId).list.head
+  }
 
 
   /**
@@ -64,19 +69,18 @@ object PlantController extends Controller {
    *         possibly augmented with the file id
    */
   def handleFileUpload(request:Request[MultipartFormData[TemporaryFile]]):(Option[FilesRow], Request[MultipartFormData[TemporaryFile]])  = {
-    
+
     request.body.file("picture").map { picture =>
       import java.io.File
       val filename = picture.filename
       val contentType = picture.contentType
-      
+
       val targetFile = s"pictures/$filename"
       val targetPath = s"${global.Global.uploadDirectory}/$targetFile"
 
       picture.ref.moveTo(new File(targetPath))
 
       val file = SlickDB.withSession { implicit session =>
-        import db.Tables._
         val insertedId = (Files returning Files.map(_.id)) +=
           FilesRow(0, targetFile, filename, contentType.get)
 
@@ -98,6 +102,6 @@ object PlantController extends Controller {
       (None, request)
     }
   }
-  
+
 
 }
