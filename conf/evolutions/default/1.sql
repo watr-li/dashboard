@@ -1,3 +1,6 @@
+
+
+
 # --- !Ups
 
 CREATE TABLE `files` (
@@ -7,6 +10,16 @@ CREATE TABLE `files` (
   `content_type` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `plants` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `current_state` varchar(25) DEFAULT 'null',
+  `image_id` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `image_id` (`image_id`),
+  CONSTRAINT `plants_ibfk_1` FOREIGN KEY (`image_id`) REFERENCES `files` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `nodes` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -29,15 +42,7 @@ CREATE TABLE `plant_humidities` (
   CONSTRAINT `plant_humidities_ibfk_1` FOREIGN KEY (`plant_id`) REFERENCES `plants` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `plants` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL DEFAULT '',
-  `current_state` varchar(25) DEFAULT 'null',
-  `image_id` int(11) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `image_id` (`image_id`),
-  CONSTRAINT `plants_ibfk_1` FOREIGN KEY (`image_id`) REFERENCES `files` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 # --- !Downs
 
