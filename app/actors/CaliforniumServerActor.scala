@@ -1,7 +1,9 @@
 package actors
 
+import actors.messages.PlantHumidityUpdated
 import akka.actor.UntypedActor
 import coap.CaliforniumServer
+import models.Plant
 import play.api.Logger
 
 /**
@@ -15,6 +17,7 @@ class CaliforniumServerActor extends UntypedActor {
 
   @throws[Exception](classOf[Exception])
   override def onReceive(message: Any): Unit = message match {
+    case PlantHumidityUpdated(x) => Plant.updatePlantState(x)
     case _ => logger.info(s"Unhandled message: $message")
   }
 
