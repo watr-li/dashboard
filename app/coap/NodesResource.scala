@@ -25,11 +25,28 @@ import scala.slick.driver.MySQLDriver.simple._
 class NodesResource(serverActor:ActorRef) extends CoapResource("nodes") {
   val logger: Logger = Logger(this.getClass)
 
+  // Create sub-resources for every known node, e.g. /nodes/<hardware identifier>/status
+  SlickDB.withSession { implicit session =>
+    Nodes.list.foreach { x =>
+      registerNodeSubresource(x)
+    }
+  }
+
   override def handlePUT(ex:CoapExchange):Unit = {
     logger.info(s"Received PUT with Payload ${ex.getRequestText} from ${ex.getSourceAddress}")
 
     val node = storeNodeInDatabase(ex)
+    registerNodeSubresource(node)
     serverActor ! NodeRegistered(node)
+  }
+
+  def registerNodeSubresource(node:NodesRow):Unit = {
+    logger.info(s"Registering CoAP resource '/nodes/${node.hardwareIdentifier}/status")
+    add(
+      new CoapResource(node.hardwareIdentifier).add(
+        new NodesStatusResource(node.id)
+      )
+    )
   }
 
   def storeNodeInDatabase(ex:CoapExchange):db.Tables.NodesRow = SlickDB.withSession { implicit session =>
