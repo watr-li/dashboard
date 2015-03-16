@@ -1,22 +1,39 @@
 package actors
 
+import actors.messages.{WebSocketSpawned, PlantHumidityUpdated}
 import akka.actor.{ActorRef, Props, UntypedActor}
+import controllers.PlantController._
+import models.Plant
 import play.api.Logger
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsString, JsObject, JsValue, Json}
 import util.SlickDB
 import db.Tables._
 import scala.slick.driver.MySQLDriver.simple._
 
 
-class WebSocketActor extends UntypedActor {
+class WebSocketActor(out:ActorRef) extends UntypedActor {
   val logger: Logger = Logger(this.getClass)
 
+  // Notify the californium actor that we exist
+  global.Global.getCaliforniumActor ! new WebSocketSpawned
 
   @throws[Exception](classOf[Exception])
   override def onReceive(message: Any): Unit = message match {
     case x:String =>
       logger.debug(s"Received string message: $message")
       handleStringMessage(x)
+
+    case PlantHumidityUpdated(x) => SlickDB.withSession { implicit session =>
+      val plants = Plants.list.map(Plant.fromPlantsRow)
+      //out !
+      //val foo = views.html.index(plants).toString()
+      val json: JsValue = JsObject(Seq(
+        "action" -> JsString("update plant overview"),
+        "html" -> JsString(views.html.index(plants, true).toString)
+      ))
+      out ! Json.stringify(json)
+    }
+
     case x => logger.debug(s"Received unknown message: $x");
   }
 
@@ -53,7 +70,7 @@ class WebSocketActor extends UntypedActor {
 object WebSocketActor {
   type JsonMessage = (String, JsValue)
 
-  def props(out:ActorRef) = Props(new WebSocketActor)
+  def props(out:ActorRef) = Props(new WebSocketActor(out))
 
   def parseJson(message:String):Option[JsonMessage] = try {
     val json = Json.parse(message)

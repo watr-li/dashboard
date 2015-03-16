@@ -11,3 +11,5 @@ case class NodeRegistered(node:NodesRow)
  * Triggered when a hardware node posts and updated humidity value
  */
 case class PlantHumidityUpdated(plant:PlantHumiditiesRow)
+
+class WebSocketSpawned

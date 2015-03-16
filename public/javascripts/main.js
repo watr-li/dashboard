@@ -2,14 +2,15 @@ var ws = new WebSocket(
     "ws://" + window.location.host + "/websocket");
 
 ws.onmessage = function(message) {
-    console.log(message);
-    document.write("<p>" + message.data + "</p>");
+    var data = JSON.parse(message.data)
+    if(data['action'] === 'update plant overview') {
+        $('#plantOverview').replaceWith($(data.html))
+    }
 };
 
 ws.onopen = function() {
     //ws.send(JSON.stringify({foo: 'bar'}))
-        //ws.send("test")
-
+    //ws.send("test")
 }
 
 $(window).on('beforeunload', function(){

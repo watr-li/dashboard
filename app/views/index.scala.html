@@ -1,4 +1,4 @@
-@(plants: Seq[Plant])
+@(plants: Seq[Plant], ajax:Boolean = false)
 
 
 @displayPlant(plant:Plant) = {
@@ -14,10 +14,10 @@
     </div>
 }
 
-@contentWrap() {
-
-    @plants.map { plant =>
-        @displayPlant(plant)
-    }
-
+@contentWrap(ajax) {
+    <div id="plantOverview">
+        @plants.map { plant =>
+            @displayPlant(plant)
+        }
+    </div>
 }

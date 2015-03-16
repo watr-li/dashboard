@@ -1,7 +1,6 @@
 package global
 
 import actors.CaliforniumServerActor
-import actors.messages.ShutdownActor
 import akka.actor.{PoisonPill, Props, ActorRef}
 import play.api.{Application, Logger, Play, GlobalSettings}
 import play.libs.Akka
@@ -28,5 +27,7 @@ object Global extends GlobalSettings {
       case None => // Do nothing
     }
   }
+
+  def getCaliforniumActor:ActorRef = californiumActor.get
 
 }
