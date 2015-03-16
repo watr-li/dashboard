@@ -44,7 +44,7 @@ class NodesResource(serverActor:ActorRef) extends CoapResource("nodes") {
     logger.info(s"Registering CoAP resource '/nodes/${node.hardwareIdentifier}/status")
     add(
       new CoapResource(node.hardwareIdentifier).add(
-        new NodesStatusResource(node.id)
+        new NodesStatusResource(node.id, serverActor)
       )
     )
   }
