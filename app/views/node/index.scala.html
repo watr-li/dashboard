@@ -2,10 +2,17 @@
 
 @plantDropdown(node:db.Tables.NodesRow, plants:Seq[db.Tables.PlantsRow]) = {
     <select class="node-plant-selector" data-node-id="@node.id">
+        <option value="-1" @plantSelected(node, null)>None</option>
         @plants.map { plant =>
-          <option value="@plant.id">@plant.name</option>
+          <option value="@plant.id" @plantSelected(node, plant)>@plant.name</option>
         }
     </select>
+}
+
+@plantSelected(node:db.Tables.NodesRow, plant:db.Tables.PlantsRow) = {
+    @if((plant == null && node.plantId.isEmpty) || (node.plantId.isDefined && plant != null && node.plantId.get == plant.id)) {
+        selected="selected"
+    }
 }
 
 @contentWrap() {
