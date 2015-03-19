@@ -23,7 +23,7 @@ import scala.slick.driver.MySQLDriver.simple._
  *
  * @param nodeId Database ID of the node to be updated when a status arrives
  */
-class NodesStatusResource(nodeId:Int, serverActor:ActorRef) extends CoapResource("status") {
+class NodesStatusResource(nodeId:Int, serverActor:ActorRef) extends CoapResource("humidity") {
   val logger: Logger = Logger(this.getClass)
 
   override def handlePUT(ex:CoapExchange):Unit = {
