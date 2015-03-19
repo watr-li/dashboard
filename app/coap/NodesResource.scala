@@ -56,8 +56,8 @@ class NodesResource(serverActor:ActorRef) extends CoapResource("nodes") {
     val q = Nodes returning Nodes.map(_.id)
 
     q.insertOrUpdate(nodeRow) match {
-      case Some(x) => ex.respond(ResponseCode.CREATED)
-      case None => ex.respond(ResponseCode.CHANGED)
+      case Some(x) => //ex.respond(ResponseCode.CREATED)
+      case None => //ex.respond(ResponseCode.CHANGED)
     }
 
     Nodes.filter(_.hardwareIdentifier === identifier).list.head

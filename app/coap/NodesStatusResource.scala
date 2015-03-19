@@ -40,7 +40,7 @@ class NodesStatusResource(nodeId:Int, serverActor:ActorRef) extends CoapResource
     plant match {
       case None =>
         logger.info(s"Did not find plant for node with id $nodeId")
-        ex.respond(ResponseCode.NOT_ACCEPTABLE)
+        //ex.respond(ResponseCode.NOT_ACCEPTABLE)
 
       case Some(plant) =>
         logger.info(s"Found plant with id ${plant.id} for node with id $nodeId")
@@ -49,7 +49,7 @@ class NodesStatusResource(nodeId:Int, serverActor:ActorRef) extends CoapResource
           PlantHumidities += PlantHumiditiesRow(0, plant.id, ex.getRequestText.toInt)
           serverActor ! PlantHumidityUpdated(newRow)
         }
-        ex.respond(ResponseCode.CHANGED)
+        //ex.respond(ResponseCode.CHANGED)
     }
 
 
