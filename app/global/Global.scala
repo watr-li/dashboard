@@ -2,6 +2,7 @@ package global
 
 import actors.CaliforniumServerActor
 import akka.actor.{PoisonPill, Props, ActorRef}
+import play.api.mvc.Request
 import play.api.{Application, Logger, Play, GlobalSettings}
 import play.libs.Akka
 
@@ -9,7 +10,7 @@ object Global extends GlobalSettings {
 
   val logger: Logger = Logger(this.getClass())
 
-  var californiumActor:Option[ActorRef] = None;
+  var californiumActor:Option[ActorRef] = None
 
   def uploadDirectory:String = {
     Play.current.configuration.getString("dashboard.uploadDirectory").get

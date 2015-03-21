@@ -24,30 +24,31 @@ trait PlantState {
 object Happy extends PlantState {
   override def toString = "happy"
   override def moodStrings: List[String] = List(
-    "Doin' pretty good!",
-    "Sooooooo happy =)"
+//    "Doin' pretty good!",
+    "Sooooooo happy"
   )
 }
 
 object Okay extends PlantState {
   override def toString = "okay"
   override def moodStrings: List[String] = List(
-    "Hmm, water would be nice :s"
+    "Hmm, water would be nice..."
   )
 }
 
 object Thirsty extends PlantState {
   override def toString = "thirsty"
   override def moodStrings: List[String] = List(
-    "Call 911, this is a water emergency!",
-    "Help... Me... x_x"
+    "Call 911, this is a water emergency!"
+//    "Help... Me... x_x"
   )
 }
 
 object Unknown extends PlantState {
   override def toString = "unknown"
   override def moodStrings: List[String] = List(
-    "Mysterious plant is mysterious!",
-    "I'm afraid I have no data, Dave"
+//    "Mysterious plant is mysterious!",
+//    "I'm afraid I have no data, Dave"
+      "No data available yet"
   )
 }

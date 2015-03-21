@@ -1,11 +1,17 @@
 @(form:Form[PlantData])
 
 <div class="large-12 columns">
+    <h1>New plant</h1>
+
+    <p>
+        Add your plant to the dashboard in order to pair it with a device and receive updates.
+    </p>
+
     @helper.form(action = routes.PlantController.plantPost, 'enctype -> "multipart/form-data") {
         @helper.inputText(form("name"))
         @helper.inputFile(form("picture"))
-        <input type="submit" value="Submit">
+        <!--<input type="submit" value="Submit">-->
+        <a href="javascript:void()" onclick="$(this).closest('form').submit()" class="button radius">Submit</a>
     }
 </div>
 
-    

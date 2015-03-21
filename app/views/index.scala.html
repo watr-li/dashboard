@@ -4,12 +4,16 @@
 @displayPlant(plant:Plant) = {
     <div>
         <div class="plant @plant.state.toString.toLowerCase">
-            <img src="@plant.picture">
+            <a href="/nodes">
+                <div class="image" style="background-image:url('@plant.picture')">
+                    <div class="dummy"></div>
+                </div>
 
-            <div class="detail">
-                <h3>@plant.name</h3>
-                <h6>@plant.state.moodString</h6>
-            </div>
+                <div class="detail">
+                    <h3>@plant.name</h3>
+                    <h6>@plant.state.moodString</h6>
+                </div>
+            </a>
         </div>
     </div>
 }
