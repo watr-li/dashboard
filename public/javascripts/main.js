@@ -3,8 +3,13 @@ var ws = new WebSocket(
 
 ws.onmessage = function(message) {
     var data = JSON.parse(message.data)
+
     if(data['action'] === 'update plant overview') {
         $('#plantOverview').replaceWith($(data.html))
+    }
+
+    if(data['action'] === 'update node list') {
+        $('#nodeList').replaceWith($(data.html))
     }
 };
 

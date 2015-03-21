@@ -1,6 +1,6 @@
 package actors
 
-import actors.messages.{WebSocketSpawned, PlantHumidityUpdated}
+import actors.messages.{NodeRegistered, WebSocketSpawned, PlantHumidityUpdated}
 import akka.actor.{ActorRef, UntypedActor}
 import coap.CaliforniumServer
 import models.Plant
@@ -25,6 +25,8 @@ class CaliforniumServerActor extends UntypedActor {
       Plant.updatePlantState(x)
       // Forward message to websocket actor such that the UI may be updated
       webSocketActors.foreach( _ ! message)
+
+    case x:NodeRegistered => webSocketActors.foreach(_ ! x)
 
     case x:WebSocketSpawned => webSocketActors = sender :: webSocketActors
     case _ => logger.info(s"Unhandled message: $message")

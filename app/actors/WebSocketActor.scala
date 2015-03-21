@@ -1,6 +1,6 @@
 package actors
 
-import actors.messages.{WebSocketSpawned, PlantHumidityUpdated}
+import actors.messages.{NodeRegistered, WebSocketSpawned, PlantHumidityUpdated}
 import akka.actor.{ActorRef, Props, UntypedActor}
 import controllers.PlantController._
 import models.Plant
@@ -25,11 +25,20 @@ class WebSocketActor(out:ActorRef) extends UntypedActor {
 
     case PlantHumidityUpdated(x) => SlickDB.withSession { implicit session =>
       val plants = Plants.list.map(Plant.fromPlantsRow)
-      //out !
-      //val foo = views.html.index(plants).toString()
+
       val json: JsValue = JsObject(Seq(
         "action" -> JsString("update plant overview"),
         "html" -> JsString(views.html.index(plants, true).toString)
+      ))
+      out ! Json.stringify(json)
+    }
+
+
+
+    case NodeRegistered(x) => SlickDB.withSession { implicit session =>
+      val json: JsValue = JsObject(Seq(
+        "action" -> JsString("update node list"),
+        "html" -> JsString(views.html.node.index(Nodes.list, Plants.list, true).toString)
       ))
       out ! Json.stringify(json)
     }
