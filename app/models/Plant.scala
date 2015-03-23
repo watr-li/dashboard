@@ -27,8 +27,8 @@ object Plant {
   def updatePlantState(humidityRow:PlantHumiditiesRow):Unit = SlickDB.withSession { implicit session =>
     // TODO: Proper humidity boundaries
     val state = humidityRow.humidity match {
-      case x if x < 100 => PlantStates.Thirsty
-      case x if x < 1000 => PlantStates.Okay
+      case x if x < 1000 => PlantStates.Thirsty
+      case x if x < 2500 => PlantStates.Okay
       case _ => PlantStates.Happy
     }
 
