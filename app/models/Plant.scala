@@ -1,6 +1,6 @@
 package models
 
-import lib.PlantStates
+import lib.{JToot, PlantStates}
 
 import db.Tables._
 import lib.PlantStates.PlantState
@@ -33,8 +33,17 @@ object Plant {
     }
 
     logger.info(s"Updating plant state of plant ${humidityRow.plantId} to $state")
-    val plant = for(p <- Plants if p.id === humidityRow.plantId) yield p.currentState
-    plant.update(Some(state.toString))
+    val plant = for(p <- Plants if p.id === humidityRow.plantId) yield p
+
+    plant.list.headOption match {
+      case Some(row) => if(row.currentState.getOrElse("") != state.toString) {
+        new JToot().toot(s"Status of '${row.name}' changed to ${state.toString}!")
+      }
+      case _ => /* nothing */
+    }
+
+    val plantState = for(p <- Plants if p.id === humidityRow.plantId) yield p.currentState
+    plantState.update(Some(state.toString))
   }
 
 }

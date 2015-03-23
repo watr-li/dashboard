@@ -21,6 +21,16 @@ libraryDependencies +=  "com.typesafe.slick" %% "slick-codegen" % "2.1.0"
 
 libraryDependencies += "org.eclipse.californium" % "californium-core" % "1.0.0-M3"
 
+libraryDependencies += "org.twitter4j" % "twitter4j-core" % "4.0.2"
+
+libraryDependencies += "org.twitter4j" % "twitter4j-core" % "4.0.2" classifier "sources"
+
+libraryDependencies += "org.twitter4j" % "twitter4j-core" % "4.0.2" classifier "javadoc"
+
+libraryDependencies += "org.slf4j" % "slf4j-api" % "1.7.10"
+
+
+
 lazy val slick = TaskKey[Seq[File]]("gen-tables")
 
 lazy val slickCodeGenTask = (sourceManaged, dependencyClasspath in Compile, runner in Compile, streams) map { (dir, cp, r, s) =>
@@ -40,4 +50,3 @@ val url = "jdbc:mysql://localhost/watrli-dashboard"
 slick <<= slickCodeGenTask // register manual sbt command
 
 sourceGenerators in Compile <+= slickCodeGenTask // register automatic code generation on every compile, remove for only manual use
-  
