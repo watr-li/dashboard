@@ -115,7 +115,7 @@ public class JToot {
         try {
             output = new FileOutputStream("config.properties");
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+                e.printStackTrace();
         }
 
         prop.setProperty("accessToken", accessToken.getToken());
