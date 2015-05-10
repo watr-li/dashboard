@@ -30,7 +30,6 @@ libraryDependencies += "org.twitter4j" % "twitter4j-core" % "4.0.2" classifier "
 libraryDependencies += "org.slf4j" % "slf4j-api" % "1.7.10"
 
 
-
 lazy val slick = TaskKey[Seq[File]]("gen-tables")
 
 lazy val slickCodeGenTask = (sourceManaged, dependencyClasspath in Compile, runner in Compile, streams) map { (dir, cp, r, s) =>
