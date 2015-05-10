@@ -37,7 +37,7 @@ object Plant {
 
     plant.list.headOption match {
       case Some(row) => if(row.currentState.getOrElse("") != state.toString) {
-        new JToot().toot(s"Status of '${row.name}' changed to ${state.toString}!")
+        new JToot().toot(s"@watr_li Status of '${row.name}' changed to ${state.toString}!")
       }
       case _ => /* nothing */
     }
