@@ -23,7 +23,11 @@ public class JToot {
 
     public JToot() throws TwitterException, FileNotFoundException {
 
-        loadProperties();
+        try {
+            loadProperties();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         /* My consumerKey brings all the tokens to the yard */
         if (prop.getProperty("accessToken") == null) {
@@ -55,25 +59,31 @@ public class JToot {
         System.out.println("Successfully updated the status to [" + status.getText() + "].");
     }
 
-    private void loadProperties() throws FileNotFoundException {
+    private void loadProperties() throws IOException {
         prop = new Properties();
-        String propFileName = "config.properties";
+        /* Our properties file is in the root dir. Make sure we're looking there.*/
+        String propFileName = System.getProperty("user.dir")+ "/config.properties";
+        File f = new File(propFileName);
+        if(!f.exists()) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
+            System.out.println("property file '" + propFileName + "' not found. Creating it for you.");
+            System.out.println("Please enter your consumerSecret:");
+            consumerSecret = br.readLine();
+            System.out.println("Please enter your consumerKey:");
+            consumerKey = br.readLine();
+            storeConsumerTokens(consumerSecret, consumerKey);
+        }
+        else {
 
-        if (inputStream != null) {
             try {
-                prop.load(inputStream);
+                prop.load(new FileInputStream(propFileName));
+                consumerSecret = prop.getProperty("Dtwitter4j.oauth.consumerSecret");
+                consumerKey = prop.getProperty("Dtwitter4j.oauth.consumerKey");
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
         }
-
-        System.out.println("I can haz props. "+prop);
-        consumerSecret = prop.getProperty("Dtwitter4j.oauth.consumerSecret");
-        consumerKey = prop.getProperty("Dtwitter4j.oauth.consumerKey");
     }
 
     private void getAccessToken() {
@@ -103,19 +113,40 @@ public class JToot {
 
         long useId = 0;
         try {
-            useId = twitter.verifyCredentials().getId();
-            storeAccessToken(useId , accessToken);
+            useId = twitter.verifyCredentials().getId(); // TODO superfluous?
+            storeAccessToken(accessToken);
         } catch (TwitterException e) {
             e.printStackTrace();
         }
     }
 
-    private void storeAccessToken(long useId, AccessToken accessToken){
+    /* TODO turn store methods into one generalized beast */
+    private void storeConsumerTokens(String consumerSecret, String consumerKey) {
         OutputStream output = null;
         try {
             output = new FileOutputStream("config.properties");
         } catch (FileNotFoundException e) {
-                e.printStackTrace();
+            e.printStackTrace();
+        }
+
+        prop.setProperty("Dtwitter4j.oauth.consumerSecret", consumerSecret);
+        prop.setProperty("Dtwitter4j.oauth.consumerKey", consumerKey);
+
+        System.out.println(prop);
+        try {
+            prop.store(output, null);
+            output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void storeAccessToken(AccessToken accessToken){
+        OutputStream output = null;
+        try {
+            output = new FileOutputStream("config.properties");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
 
         prop.setProperty("accessToken", accessToken.getToken());
