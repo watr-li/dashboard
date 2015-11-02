@@ -1,5 +1,7 @@
 package lib;
 
+import play.Logger;
+
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -44,7 +46,7 @@ public class JToot {
                 .setOAuthAccessToken(accessKey)
                 .setOAuthAccessTokenSecret(accessSecret);
 
-        System.out.println(consumerKey + "  " + consumerSecret + "  " + accessKey + "  " + accessSecret);
+        Logger.info(consumerKey + "  " + consumerSecret + "  " + accessKey + "  " + accessSecret);
 
         TwitterFactory tf = new TwitterFactory(cb.build());
         twitter = tf.getInstance();
@@ -52,7 +54,7 @@ public class JToot {
 
     public void toot(String text) throws TwitterException {
         Status status = twitter.updateStatus(text);
-        System.out.println("Successfully updated the status to [" + status.getText() + "].");
+        Logger.info("Successfully updated the status to [" + status.getText() + "].");
     }
 
     private void loadProperties() throws FileNotFoundException {
@@ -71,7 +73,7 @@ public class JToot {
             throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
         }
 
-        System.out.println("I can haz props. "+prop);
+        Logger.info("I can haz props. "+prop);
         consumerSecret = prop.getProperty("Dtwitter4j.oauth.consumerSecret");
         consumerKey = prop.getProperty("Dtwitter4j.oauth.consumerKey");
     }
@@ -79,8 +81,8 @@ public class JToot {
     private void getAccessToken() {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while (null == accessToken) {
-            System.out.println("Open the following URL and grant access to your account:");
-            System.out.println(requestToken.getAuthorizationURL());
+            Logger.info("Open the following URL and grant access to your account:");
+            Logger.info(requestToken.getAuthorizationURL());
             System.out.print("Enter the PIN(if aviailable) or just hit enter.[PIN]:");
             try{
                 String pin = br.readLine();
@@ -92,7 +94,7 @@ public class JToot {
                 }
             } catch (TwitterException te) {
                 if(401 == te.getStatusCode()){
-                    System.out.println("Unable to get the access token.");
+                    Logger.info("Unable to get the access token.");
                 }else{
                     te.printStackTrace();
                 }
@@ -121,7 +123,7 @@ public class JToot {
         prop.setProperty("accessToken", accessToken.getToken());
         prop.setProperty("accessTokenSecret", accessToken.getTokenSecret());
 
-        System.out.println(prop);
+        Logger.info(""+prop);
         try {
             prop.store(output, null);
             output.close();
