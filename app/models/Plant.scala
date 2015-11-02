@@ -35,9 +35,16 @@ object Plant {
     logger.info(s"Updating plant state of plant ${humidityRow.plantId} to $state")
     val plant = for(p <- Plants if p.id === humidityRow.plantId) yield p
 
+
     plant.list.headOption match {
       case Some(row) => if(row.currentState.getOrElse("") != state.toString) {
-        new JToot().toot(s"@watr_li Status of '${row.name}' changed to ${state.toString}!")
+        try {
+          new JToot().toot(s"@watr_li Status of '${row.name}' changed to ${state.toString}!")
+          } catch {
+           case e:Exception =>
+            println(e.getMessage())
+            println(e.getStackTrace())
+          }
       }
       case _ => /* nothing */
     }
